@@ -1,0 +1,55 @@
+﻿ID,Tipo Atendimento,demandas_prop,valor_glosa,data,mes&ano
+RCHG,Teleatendimento Humano Receptivo,23112,65407.73,1/6/2025,12025
+RCEU,Atendimento URA - Unidade de Resposta Audível,37497,14998.94,1/6/2025,12025
+RCHHD,Help Desk,483,4343.07,1/6/2025,12025
+MHGC,Chat - Atendimento Humano,600,2788.1,1/6/2025,12025
+MSMIHW,Serviço de Mensageria Instantânea Humano,9832,10028.53,1/6/2025,12025
+MHGCT,Carta,1,7.47,1/6/2025,12025
+MHGAP,Atendimento Presencial,2,8.72,1/6/2025,12025
+MHEFG,E-mail / Formulário Eletrônico,54,257.54,1/6/2025,12025
+MHGAPP,Plataformas,105,143.06,1/6/2025,12025
+MEACB,Chat - Atendimento Bot,0,0,1/6/2025,12025
+MEAP,Aplicativo,0,0,1/6/2025,12025
+MEAV,Assistente Virtual,0,0,1/6/2025,12025
+MSMIEW,Serviço de Mensageria Instantânea Eletrônico,22111,29628.51,1/6/2025,12025
+MESMIB,Serviço Mensageria Instantânea Bot,0,0,1/6/2025,12025
+ATH,TeleAtendimento Humano Ativo,17,43.43,1/6/2025,12025
+ATMST,Ativo mensagem de Texto - SMS,0,0,1/6/2025,12025
+ATMVV,Ativo Mensagem de Voz - Voice,44423,16436.5,1/6/2025,12025
+ATAE,Ativo por E-mail,1337,40.12,1/6/2025,12025
+RCHG,Teleatendimento Humano Receptivo,21254,60149.66,2/3/2025,22025
+RCEU,Atendimento URA - Unidade de Resposta Audível,30841,12336.44,2/3/2025,22025
+RCHHD,Help Desk,265,2384.33,2/3/2025,22025
+MHGC,Chat - Atendimento Humano,586,2725.81,2/3/2025,22025
+MSMIHW,Serviço de Mensageria Instantânea Humano,10174,10377.4,2/3/2025,22025
+MHGCT,Carta,1,7.17,2/3/2025,22025
+MHGAP,Atendimento Presencial,2,9.45,2/3/2025,22025
+MHEFG,E-mail / Formulário Eletrônico,71,334.19,2/3/2025,22025
+MHGAPP,Plataformas,152,206.05,2/3/2025,22025
+MEACB,Chat - Atendimento Bot,0,0,2/3/2025,22025
+MEAP,Aplicativo,0,0,2/3/2025,22025
+MEAV,Assistente Virtual,0,0,2/3/2025,22025
+MSMIEW,Serviço de Mensageria Instantânea Eletrônico,54464,72981.74,2/3/2025,22025
+MESMIB,Serviço Mensageria Instantânea Bot,0,0,2/3/2025,22025
+ATH,TeleAtendimento Humano Ativo,13,33.85,2/3/2025,22025
+ATMST,Ativo mensagem de Texto - SMS,0,0,2/3/2025,22025
+ATMVV,Ativo Mensagem de Voz - Voice,11533,4267.3,2/3/2025,22025
+ATAE,Ativo por E-mail,7240,217.19,2/3/2025,22025
+ATAE,Ativo por E-mail,26488,794.64,8/29/2025,82025
+ATH,TeleAtendimento Humano Ativo,0,0,8/29/2025,82025
+ATMST,Ativo mensagem de Texto - SMS,308986,15449.3,8/29/2025,82025
+ATMVV,Ativo Mensagem de Voz - Voice,69700,25789,8/29/2025,82025
+MEACB,Chat - Atendimento Bot,0,0,8/29/2025,82025
+MEAP,Aplicativo,0,0,8/29/2025,82025
+MEAV,Assistente Virtual,0,0,8/29/2025,82025
+MESMIB,Serviço Mensageria Instantânea Bot,0,0,8/29/2025,82025
+MHEFG,E-mail / Formulário Eletrônico,495,2341.35,8/29/2025,82025
+MHGAP,Atendimento Presencial,5,27.6,8/29/2025,82025
+MHGAPP,Plataformas,502,682.72,8/29/2025,82025
+MHGC,Chat - Atendimento Humano,2361,10978.65,8/29/2025,82025
+MHGCT,Carta,2,22.36,8/29/2025,82025
+MSMIEW,Serviço de Mensageria Instantânea Eletrônico,490753,657609.02,8/29/2025,82025
+MSMIHW,Serviço de Mensageria Instantânea Humano,24624,25116.48,8/29/2025,82025
+RCEU,Atendimento URA - Unidade de Resposta Audível,151486,60594.4,8/29/2025,82025
+RCHG,Teleatendimento Humano Receptivo,41373,117085.59,8/29/2025,82025
+RCHHD,Help Desk,276,2481.24,8/29/2025,82025

@@ -1,0 +1,19 @@
+﻿Índice,Categoria_atd,Tipos de Serviços,Categoria de Atendimento,Tipo de Atendimento
+1,Receptivo Humano,TELEATENDIMENTO RECEPTIVO,Humano,Teleatendimento Humano Receptivo
+2,Receptivo Eletrônico,TELEATENDIMENTO RECEPTIVO,Eletrônico,AtendimentoURA- Unidadede Resposta Audível
+3,Receptivo Humano,ATENDIMENTO HELP DESK,Humano,Help Desk
+4,Multimeios Humano,ATENDIMENTO MULTIMEIOS,Humano,Chat-AtendimentoHumano
+5,Multimeios Humano,ATENDIMENTO MULTIMEIOS,Humano,Serviço de Mensageria Instantânea Humano
+6,Multimeios Humano,ATENDIMENTO MULTIMEIOS,Humano,Carta
+7,Multimeios Humano,ATENDIMENTO MULTIMEIOS,Humano,Atendimento Presencial
+8,Multimeios Humano,ATENDIMENTO MULTIMEIOS,Humano,E-mail/Formulário eletrônico
+9,Multimeios Eletrônico,ATENDIMENTO MULTIMEIOS,Eletrônico,Plataformas
+10,Multimeios Eletrônico,ATENDIMENTO MULTIMEIOS,Eletrônico,Chat -AtendimentoBot
+11,Multimeios Eletrônico,ATENDIMENTO MULTIMEIOS,Eletrônico,Aplicativo
+12,Multimeios Eletrônico,ATENDIMENTO MULTIMEIOS,Eletrônico,Assistente Virtual
+13,Multimeios Eletrônico,ATENDIMENTO MULTIMEIOS,Eletrônico,Serviço de Mensageria Instantânea Menu Eletrônico
+14,Multimeios Eletrônico,ATENDIMENTO MULTIMEIOS,Eletrônico,Serviço mensageria Instantânea Bot
+15,Ativo Humano,ATIVO,Humano,Teleatendimento Humano Ativo
+16,Ativo Eletrônico,ATIVO,Eletrônico,Ativo mensagemde Texto - SMS
+17,Ativo Eletrônico,ATIVO,Eletrônico,Ativo mensagemde Voz - Voice
+18,Ativo Eletrônico,ATIVO,Eletrônico,Mala Direta(ativo por e-mail)

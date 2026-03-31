@@ -1,55 +1,103 @@
-from crewai import Agent, Task, Crew, Process, LLM
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Conectando ao Ollama do jeito novo e oficial do CrewAI
+from crewai import Agent, Task, Crew, Process, LLM
+from langchain_ollama import OllamaLLM
+from toolsformyagents import git_manager_tool, file_validator_tool, ler_arquivo_csv
+from dotenv import load_dotenv
+import os
+
+# Carrega variáveis do .env
+load_dotenv()
+
+# Aqui está a mágica: ele vai direto no localhost:11434 e procura o llama3.2
 llm_local = LLM(
     model="ollama/llama3.2",
     base_url="http://localhost:11434"
 )
 
-# 2. Definindo os Agentes (Sua Equipe)
-ceo = Agent(
-    role='Diretor de MIS e Operações',
-    goal='Estratégia, planejamento de KPIs e estruturação de equipes de dados para Call Center.',
-    backstory='Você tem 15 anos de experiência em operações de Call Center e TI. Você pensa em métricas de negócio, eficiência, TMA, SLA e estruturação de banco de dados (PostgreSQL).',
+# Lista de arquivos corrigida (com vírgula e extensões)
+arquivos_faturamento = [
+    r"data/select_faturamento.xlsx - BANCO_QUERY.csv",
+    r"data/select_faturamento.xlsx - TB_GLOSAS.csv",
+    r"data/select_faturamento.xlsx - TB_DEMANDAS_EXTERNAS.csv",
+    r"data/select_faturamento.xlsx - QUADRO_ORCAMENTO_25_26.csv",
+    r"data/select_faturamento.xlsx - QUADRO_ITENS_ORCADO.csv"
+]
+
+# 2. Definindo os Agentes
+arquiteto_mis = Agent(
+    role='Arquiteto de Soluções MIS e Backend',
+    goal='Projetar a estrutura do banco de dados (PostgreSQL) e a arquitetura em Python.',
+    backstory='Especialista em modelagem no DBeaver/PgAdmin e automação de operações de faturamento.',
     llm=llm_local,
-    verbose=True,
-    allow_delegation=True
-)
-
-analista = Agent(
-    role='Analista de Dados Sênior',
-    goal='Executar tarefas técnicas, criar consultas SQL, scripts Python e documentação técnica.',
-    backstory='Você é um especialista técnico em Python, SQL (DBeaver/pgAdmin) e Power BI. Você transforma os planos do Diretor de MIS em realidade técnica.',
-    llm=llm_local,
-    verbose=True,
-    allow_delegation=False
-)
-
-# 3. Definindo as Tarefas
-tarefa_planejamento = Task(
-    description='Crie um plano de contratação e estrutura para uma nova equipe de MIS focada em dados. O plano deve incluir: 3 cargos essenciais, ferramentas que serão usadas (ex: PostgreSQL, Power BI, Python) e 5 KPIs operacionais que essa equipe deverá monitorar diariamente.',
-    expected_output='Um documento formatado em Markdown com o plano completo.',
-    agent=ceo
-)
-
-tarefa_documentacao = Task(
-    description='A partir do plano criado pelo Diretor, formate um documento final profissional e salve o resultado em um arquivo.',
-    expected_output='O documento final salvo no disco.',
-    agent=analista,
-    output_file='plano_equipe_mis.md' # É AQUI QUE O ARQUIVO FÍSICO É GERADO!
-)
-
-# 4. Montando a "Empresa" (Crew)
-minha_empresa = Crew(
-    agents=[ceo, analista],
-    tasks=[tarefa_planejamento, tarefa_documentacao],
-    process=Process.sequential, # Um trabalha depois do outro
+    tools=[ler_arquivo_csv], # <--- ADICIONE ESTA LINHA AQUI
     verbose=True
 )
 
-# 5. Iniciando o trabalho
-print("### Iniciando Operação da Empresa de IA ###")
-resultado = minha_empresa.kickoff()
+desenvolvedor_web = Agent(
+    role='Engenheiro de Software Web e Relatórios',
+    goal='Criar a interface do usuário e implementar exportação de PDF/Excel.',
+    backstory='Programador Python focado em Pandas, Flask/Streamlit e integração com Postgres.',
+    llm=llm_local,
+    verbose=True
+)
 
-print("######################")
-print("TRABALHO CONCLUÍDO! Verifique o arquivo 'plano_equipe_mis.md' na sua pasta.")
+analista_dados = Agent(
+    role='Git Manager e Analista de Integridade',
+    goal='Validar a documentação gerada e sincronizar o progresso com o GitHub.',
+    backstory='Você garante que nenhum código seja perdido e que o repositório esteja sempre atualizado.',
+    tools=[file_validator_tool, git_manager_tool, ler_arquivo_csv],
+    llm=llm_local, # ADICIONADO AQUI
+    verbose=True
+)
+
+# 3. Definindo as Tarefas (Sem duplicidade)
+tarefa_arquitetura = Task(
+    description=f"""
+    Analise os esquemas de dados presentes nos arquivos: {arquivos_faturamento}.
+    1. Projete as tabelas no PostgreSQL para 'TB_GLOSAS', 'TB_DEMANDAS_EXTERNAS' e 'QUADRO_ORCAMENTO'.
+    2. Crie o script SQL 'init_db.sql' para criação dessas tabelas.
+    3. Garanta que as queries do 'BANCO_QUERY' funcionem nesta estrutura.
+    """,
+    expected_output='Documento de arquitetura técnica + script SQL de criação de tabelas.',
+    agent=arquiteto_mis,
+    output_file='arquitetura_e_sql.md'
+)
+
+tarefa_codigo_inicial = Task(
+    description='''
+    Com base no SQL gerado, crie o código Python para conectar no banco local.
+    Crie uma rotina que importe os dados dos CSVs enviados para as novas tabelas do Postgres.
+    Desenvolva o esqueleto de uma interface Dashboard.
+    ''',
+    expected_output='Código Python completo (app_faturamento.py) com conexão ao banco.',
+    agent=desenvolvedor_web,
+    context=[tarefa_arquitetura],
+    output_file='app_faturamento.py'
+)
+
+tarefa_versionamento = Task(
+    description='''
+    1. Use o file_validator_tool para verificar se 'arquitetura_e_sql.md' e 'app_faturamento.py' existem.
+    2. Use o git_manager_tool para fazer o push desses arquivos com a mensagem 'Desenvolvimento inicial do Portal de Faturamento'.
+    ''',
+    expected_output='Confirmação de que os arquivos estão salvos e enviados ao GitHub.',
+    agent=analista_dados
+)
+
+# 4. Montando a Equipe
+empresa_desenvolvimento = Crew(
+    agents=[arquiteto_mis, desenvolvedor_web, analista_dados],
+    tasks=[tarefa_arquitetura, tarefa_codigo_inicial, tarefa_versionamento],
+    process=Process.sequential,
+    verbose=True
+)
+
+# 5. Execução
+if __name__ == "__main__":
+    print("### Iniciando Desenvolvimento e Versionamento Automático ###")
+    resultado = empresa_desenvolvimento.kickoff()
+    print("######################")
+    print("TRABALHO CONCLUÍDO E SINCRONIZADO!")
