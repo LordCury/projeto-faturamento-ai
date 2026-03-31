@@ -1,0 +1,5 @@
+python312_empresa/
+venv/
+__pycache__/
+*.zip
+*.exe
