@@ -1,5 +1,29 @@
-python312_empresa/
-venv/
+# Ambiente
+.env
+.venv/
+
+# Python
 __pycache__/
-*.zip
-*.exe
+*.pyc
+
+# Logs
+logs/
+*.log
+
+# Streamlit
+.streamlit/
+
+# Dados gerados
+data/corrigidas/
+data/tmp/
+
+# IDE
+.vscode/
+
+# Banco local
+*.sqlite3
+*.db
+
+# Sistema
+.DS_Store
+Thumbs.db

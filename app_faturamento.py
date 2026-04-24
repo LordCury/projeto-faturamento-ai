@@ -1,81 +1,94 @@
-Para resolver esta abordagem, eu criei o seguinte código em python dentro do meu sistema `app_faturamento.py`:
+import streamlit as st
+from empresa_ai import listar_tabelas_schema, listar_logs_etl, executar_consulta
+from extractor import ETLExtractor
 
-```python
-# importar bibliotecas necessárias
-from flask import Flask, render_template, request
-import pandas as pd 
-import psycopg2
+st.set_page_config(page_title="Portal de Faturamento", layout="wide")
 
-# criar a aplicação Flask
-app = Flask(__name__)
+st.title("Portal Analítico de Faturamento")
 
-# criar conexão com o banco
-def conectar_banco():
+menu = st.sidebar.radio(
+    "Menu",
+    ["Dashboard", "ETL", "Logs ETL", "Tabelas Staging", "Consulta SQL"]
+)
+
+if menu == "Dashboard":
+    st.subheader("Dashboard")
+    st.info("Área inicial do dashboard. Aqui vamos colocar gráficos e indicadores.")
+
     try:
-        conn = psycopg2.connect(
-            dbname="nome_do_banco",
-            user="usuario do banco",
-            password="sua_senha_do_banco",
-            host="endereço_ip_banco"
-        )
-        return conn
+        df_logs = listar_logs_etl()
+        df_tabelas = listar_tabelas_schema()
 
-    except (Exception, psycopg2.Error) as error:
-        print(error)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Total de logs carregados", len(df_logs))
+        with col2:
+            st.metric("Total de tabelas no schema", len(df_tabelas))
 
-# Importar os arquivos CSV
-def LerArquivoCSV(caminhoArquivo):
-    return pd.read_csv(caminhoArquivo)
-
-# Criar uma tabela no banco com base nos dados do arquivo CSV
-def CriarTabela(conn,Tabela,Dados):
-    try: 
-        criandoTabela = conn.cursor()
-        for i in Dados:
-            criandoTabela.execute(f"INSERT INTO {Tabela}({', '.join(i.keys())})VALUES({[str(val)for val in [i[v]for v in i]]})")
-        conn.commit()
-    except (Exception, psycopg2.Error) as error:
-        print(error)
-
-# Criar um PDF dos dados do arquivo CSV
-def FaturamentoPDF(conn):
-    faturamento = pd.read_csv('path/para/csv')
-    pdf_faturamento = faturamento.to_pdf() 
-    with open('faturamento1.pdf','wb') as file:
-      file.write(pdf_faturamento)
-    return 'faturamento1.pdf'
-
-# Executar rotina de importação
-def ExecutarRotina( conn,caminho_arquivo):
-    try: 
-        arquivo_ler = pd.read_csv(caminho_arquivo)  # Lê o arquivo CSV
-        tabela_criar = conectar_banco()  # Conecta com a tabela para criar no banco
-        criandoTabela = table_criar.cursor()
-        lista_colunas_geral = [list(map(str,cam[0]))+[cam[1]] for cam in arquivo_ler.columns] 
-        criaTabelela (tabela_criar, 'nome_da tabela', lista_colunas_geral)  # Cria a table com o nome de tabela
+        st.write("Últimos logs da ETL")
+        st.dataframe(df_logs.head(10), use_container_width=True)
 
     except Exception as e:
-      print("ERRO EXISTE",e)
-    
-# Executar rotina de gerenciamento
-@app.route('/', methods=['GET','POST'])
-def index():
-    if request.method == 'POST':
-        file = request.files['file']
-        conn = conectar_banco()
-        caminho_arquivo = file.filename
-        arquivo_ler = pd.read_csv(caminho_arquivo)  # Lê o arquivo CSV
-        criarTabelela (conn, 'nomedatabel','gencalcolunas')   # Cria a table com o nome de tabela
-        conn.commit()
-        print("Arquivo do banco gerado")
-        FaturamentoPDF(conn)
-        
-    else:
-        return render_template('index.html')
+        st.error(f"Erro ao carregar informações do dashboard: {e}")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+elif menu == "ETL":
+    st.subheader("Execução ETL")
 
-```
+    modo_carga = st.selectbox(
+        "Modo de carga",
+        ["replace", "append", "truncate_append"]
+    )
 
-Neste exemplo acima eu utilizei os seguintes elementos da biblioteca: **Flask** para criar uma interface com a qual um usuário pode carregar dados de CSV,  **Pandas** foi utilizado para importar os CSVs utilizados e criar as tabelas, utilizando psycopg2 que se relaciona diretamente ao PostgreSql para fazer as conexões necessárias.
+    incremental = st.checkbox("Carga incremental", value=True)
+    dias_retroativos = st.number_input(
+        "Dias retroativos",
+        min_value=1,
+        max_value=30,
+        value=1
+    )
+
+    if st.button("Executar ETL"):
+        try:
+            extractor = ETLExtractor()
+            extractor.executar_todos(
+                modo_carga=modo_carga,
+                incremental=incremental,
+                dias_retroativos=dias_retroativos
+            )
+            st.success("ETL executada. Verifique os logs.")
+        except Exception as e:
+            st.error(f"Erro ao executar a ETL: {e}")
+
+elif menu == "Logs ETL":
+    st.subheader("Logs da ETL")
+    try:
+        df_logs = listar_logs_etl()
+        st.dataframe(df_logs, use_container_width=True)
+    except Exception as e:
+        st.error(f"Erro ao carregar logs: {e}")
+
+elif menu == "Tabelas Staging":
+    st.subheader("Tabelas do Schema")
+    try:
+        df_tabelas = listar_tabelas_schema()
+        st.dataframe(df_tabelas, use_container_width=True)
+    except Exception as e:
+        st.error(f"Erro ao listar tabelas: {e}")
+
+elif menu == "Consulta SQL":
+    st.subheader("Consulta SQL")
+    st.warning("Use apenas consultas SELECT neste ambiente.")
+
+    query = st.text_area("Digite a query", height=200)
+
+    if st.button("Executar consulta"):
+        try:
+            if not query.strip():
+                st.warning("Digite uma query.")
+            elif not query.strip().lower().startswith("select"):
+                st.error("Por segurança, apenas consultas SELECT são permitidas.")
+            else:
+                df = executar_consulta(query)
+                st.dataframe(df, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erro na consulta: {e}")

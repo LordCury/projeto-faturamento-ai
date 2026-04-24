@@ -1,0 +1,6 @@
+{
+  "name": "LER_QUERY_CORRIGIDA_TOOL",
+  "parameters": {
+    "file_path": "data/corrigidas/resultados_correcao_queries.sql"
+  }
+}
