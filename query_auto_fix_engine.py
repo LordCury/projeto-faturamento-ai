@@ -35,6 +35,13 @@ class QueryAutoFixEngine:
         )
         return create_engine(conn_str, pool_pre_ping=True)
 
+    def corrigir_to_date(sql):
+        return re.sub(
+            r"to_date\(\s*to_chara::date\s*,\s*'dd/mm/yyyy'\s*\),\s*'dd/mm/yyyy'\)",
+            "to_date(to_char(c.data_hora::date, 'dd/mm/yyyy'), 'dd/mm/yyyy')",
+            sql
+        )
+
     def listar_queries(self):
         return sorted(self.corrected_dir.glob("*.sql"))
 
@@ -49,21 +56,31 @@ class QueryAutoFixEngine:
         except Exception as e:
             return False, str(e)
 
+    def corrigir_where(sql):
+        return sql.replace("WHERE q.data", "WHERE q.dia")
+
+    def corrigir_parenteses(sql):
+        return sql.replace("), 'dd/mm/yyyy')", ", 'dd/mm/yyyy')")
+
     def aplicar_correcoes_basicas(self, query: str) -> tuple[str, list[str]]:
         alteracoes = []
 
         original = query
 
         substituicoes = {
-            "to_chara::date": "c.data_hora::date",
-            "Humano_eetronico": "Humano_eletronico",
+            # Typos comuns
+            "tatus_whatsapp": "status_whatsapp",
+            "to_chara": "to_char",
+            "inicio_telamp": "inicio_telegram_stamp",
             "Recebido_Elenico": "Recebido_Eletronico",
-            "recebidono": "recebido_humano",
-            "teendimento_eletronico": "tm.tempo_atendimento_eletronico",
-            "Tempo_Atento_Eletronico": "Tempo_Atendimento_Eletronico",
-            "inicio_telamp": "tme.inicio_telegram_stamp",
-            "order by c.fila, c.dia_mes, mes, an": "order by c.fila, c.dia_mes, mes, ano",
-            "WHERE q.data >=": "WHERE q.dia >=",
+            "Humano_eetronico": "Humano_eletronico",
+            "recebidono": "Recebido_humano",
+
+            # Correção de filtro final
+            "q.data": "q.dia",
+
+            # Correção de erro lógico Power Query
+            "then else 0": "then 1 else 0",
         }
 
         for errado, certo in substituicoes.items():

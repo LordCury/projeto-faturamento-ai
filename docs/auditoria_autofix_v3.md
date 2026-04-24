@@ -1,3 +1,2 @@
-{"name": " LerQueriesCorrigidasTool", "parameters": {"file_path": "data/corrigidas/data/corrigida_1.sql", "directory_path": "/query-corrigidas"}}; 
-{"name": " LerQueriesCorrigidasTool", "parameters": {"file_path": "data/corrigidas.data/corrigida_2.sql", "directory_path": "/query-corrigidas"}}; 
-{"name": " LerQueriesCorrigidasTool", "parameters": {"file_path": "data/corrigidas/corrigida_3.sql", "directory_path": "/query-corrigidas"}}
+{"name": "analyse_resultado_autofix_v3", "parameters": {"arquivo_logging_file_path": {"file_path": "data/corrigidas_AUTO_fix_v3_resultado.csv"}}}
+{"name": "ler_query_corrigida_tool", "parameters": {"quer_query": "{"}}
