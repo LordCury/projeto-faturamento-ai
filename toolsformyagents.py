@@ -197,11 +197,19 @@ def git_manager_tool(commit_message: str, **kwargs) -> str:
 
 
 @tool("file_validator_tool")
-def file_validator_tool(file_path: str, **kwargs) -> str:
+def file_validator_tool(file_path: str = "", **kwargs) -> str:
     """
     Valida se um arquivo existe e se possui conteúdo.
+    Informe o caminho no parâmetro file_path.
     """
     try:
+        if not file_path:
+            return (
+                "Erro: parâmetro obrigatório ausente. "
+                "Use file_path com o caminho do arquivo. "
+                "Exemplo: file_validator_tool(file_path='docs/auditoria_autofix_v3.md')"
+            )
+
         caminho = _resolver_caminho(file_path)
 
         if caminho.exists():
@@ -211,6 +219,7 @@ def file_validator_tool(file_path: str, **kwargs) -> str:
             return f"Alerta: O arquivo '{caminho}' existe, mas está vazio."
 
         return f"Erro: O arquivo '{caminho}' não foi encontrado."
+
     except Exception as e:
         return f"Erro inesperado ao validar o arquivo: {e}"
 

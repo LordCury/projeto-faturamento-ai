@@ -69,12 +69,14 @@ tarefa_analise_v3 = Task(
 
 tarefa_git_v3 = Task(
     description="""
-    Validar os arquivos:
-    - logs/auto_fix_v3_resultado.csv
-    - docs/auditoria_autofix_v3.md
+    Valide obrigatoriamente os arquivos abaixo usando file_validator_tool.
+    Use exatamente estes parâmetros:
 
-    Se existirem, executar git_manager_tool com a mensagem:
-    Auto fix v3 para queries SQL com auditoria
+    1. file_validator_tool(file_path="logs/auto_fix_v3_resultado.csv")
+    2. file_validator_tool(file_path="docs/auditoria_autofix_v3.md")
+
+    Se os dois arquivos existirem e tiverem conteúdo, execute git_manager_tool com:
+    commit_message="Auto fix v3 para queries SQL com auditoria"
     """,
     expected_output="Status do versionamento Git.",
     agent=agente_git,
